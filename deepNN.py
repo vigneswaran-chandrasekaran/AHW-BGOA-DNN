@@ -15,7 +15,9 @@ def param_calc(bits):
     max_lr_value=bits[10:13]
     min_lr_value=bits[13:16]
     
-    Dropout_rate=[str(i) for i in Dropout_rate]
+    print(Dropout_rate)
+    
+    Dropout_rate=[str(int(i)) for i in Dropout_rate]
     Dropout_rate=''.join(Dropout_rate)
     Dropout_rate=int(Dropout_rate,2)
     if Dropout_rate==0:
@@ -23,7 +25,7 @@ def param_calc(bits):
 
     Dropout_rate=Dropout_rate/float(100)
 
-    momentum_value=[str(i) for i in momentum_value]
+    momentum_value=[str(int(i)) for i in momentum_value]
     momentum_value=''.join(momentum_value)
     momentum_value=int(momentum_value,2)
     if momentum_value==0:
@@ -32,7 +34,7 @@ def param_calc(bits):
     momentum_value=momentum_value/float(100)
     momentum_value=0.85+momentum_value
 
-    max_lr_value=[str(i) for i in max_lr_value]
+    max_lr_value=[str(int(i)) for i in max_lr_value]
     max_lr_value=''.join(max_lr_value)
     max_lr_value=int(max_lr_value,2)
     if max_lr_value==0:
@@ -40,7 +42,7 @@ def param_calc(bits):
 
     max_lr_value=max_lr_value*(10**-2)
 
-    min_lr_value=[str(i) for i in min_lr_value]
+    min_lr_value=[str(int(i)) for i in min_lr_value]
     min_lr_value=''.join(min_lr_value)
     min_lr_value=int(min_lr_value,2)
     if min_lr_value==0:
@@ -53,10 +55,11 @@ def param_calc(bits):
 def DeepNeuralNetwork(list_with_one,bits,X,Y):
     
     skfold = StratifiedKFold(n_splits=10,shuffle=True)
+    print(bits)
 
     Dropout_rate,momentum_value,max_lr_value,min_lr_value = param_calc(bits)
     cvscore=[]
-
+    
     for (train, test) in skfold.split(X,Y):
     
         X_train, X_valid, Y_train, Y_valid = train_test_split(X[train],Y[train], test_size=0.2, shuffle= True,stratify=Y[train])
@@ -76,7 +79,7 @@ def DeepNeuralNetwork(list_with_one,bits,X,Y):
         epoch_size=1000;batch_size=2250
         schedule = SGDRScheduler(min_lr=min_lr_value,max_lr=max_lr_value,steps_per_epoch=numpy.ceil(epoch_size/batch_size),lr_decay=0.9,cycle_length=10,mult_factor=1.5)
         #history=model.fit(X_train, Y_train, validation_data=(X_valid,Y_valid), epochs=500,callbacks=[schedule,early_stopping_monitor,tensorboard],verbose=2,shuffle=True)
-        history=model.fit(X_train, Y_train, validation_data=(X_valid,Y_valid), epochs=10,batch_size=1500,callbacks=[schedule],verbose=2,shuffle=True)
+        history=model.fit(X_train, Y_train, validation_data=(X_valid,Y_valid), epochs=10,batch_size=1500,callbacks=[schedule],verbose=0,shuffle=True)
         scores = model.evaluate(X[test], Y[test], verbose=1)
         cvscore.append(scores[1]*100.000)
         #plot_graph(history)

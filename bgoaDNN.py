@@ -9,19 +9,17 @@ def adaptive_haar_wavelet(binary,k_value):
 
     min_max_scaler = preprocessing.MinMaxScaler()
     binary = min_max_scaler.fit_transform(binary)
-
+    binary=binary.tolist()
     for i in range(len(binary)):
         m=k_value[i]
-        m=[str(t) for t in m]
-        m=int(m,2)
         m=(2**m)
         k=randint(0,m//2)
         for j in range(len(binary[i])):
             x=binary[i][j]
             if x >= (k/float(m)) and x <= ((k+0.5)/float(m)):
-                binary[i][j]=1
+                binary[i][j]=int(1)
             else:
-                binary[i][j]=0
+                binary[i][j]=int(0)
 
     return(binary)
         
@@ -71,11 +69,12 @@ def goa_haar_dffnn(no_of_generation,no_of_population,bitgenerated,feature_size,X
         for t in range(feature_size):
             if binary_bits[index][t]==1:
                 list_with_one.append(t)
-        
+        if len(list_with_one)<=5:
+            list_with_one=(range(20,35))
         accuracy=DeepNeuralNetwork(list_with_one,binary_bits[index][feature_size:-4],X[:,list_with_one],Y)
         
-        fitnessA=(90.99*accuracy)
-        fitnessB=0.01*(1-(len(list_with_one)/float(feature_size)))
+        fitnessA=(0.9099*accuracy)
+        fitnessB=0.0001*(1-(len(list_with_one)/float(feature_size)))
 
         fitness=fitnessA+fitnessB
         fitness_array.append(fitness)
@@ -98,7 +97,8 @@ def goa_haar_dffnn(no_of_generation,no_of_population,bitgenerated,feature_size,X
 
         for pop in range(no_of_population):    
             
-            k_instant=''.join(binary_bits[pop][-4:-1])
+            k_instant=[str(ith) for ith in binary_bits[pop][-4:-1]]
+            k_instant=''.join(k_instant)
             k_value.append(int(k_instant,2))
             for dec in range(bitgenerated):
             
@@ -124,10 +124,11 @@ def goa_haar_dffnn(no_of_generation,no_of_population,bitgenerated,feature_size,X
             for s in range(feature_size):
                 if binary_bits[t][s]==1:
                     list_with_one.append(s)
-
+            if len(list_with_one)<=5:
+                list_with_one=(range(20,35))
             accuracy=DeepNeuralNetwork(list_with_one,binary_bits[t][feature_size:-4],X[:,list_with_one],Y)
-            fitnessA=(90.99*accuracy)
-            fitnessB=0.01*(1-(len(list_with_one)/float(feature_size)))
+            fitnessA=(0.9099*accuracy)
+            fitnessB=0.0001*(1-(len(list_with_one)/float(feature_size)))
             fitness=fitnessA+fitnessB
             fitness_array.append(fitness)
         
