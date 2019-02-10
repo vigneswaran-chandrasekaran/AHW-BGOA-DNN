@@ -11,8 +11,6 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 from numpy import genfromtxt
 import numpy
-import warnings
-warnings.simplefilter("ignore", UserWarning)
 
 #value for hyperparameters for Learning rate Annealing
 max_lr_value=1e-2
